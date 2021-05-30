@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --mode production",
     "start": "webpack-dev-server --mode development",
-    "deploy": "node scripts/gh-pages-deploy.js"
+    "deploy": "node gh-pages-deploy.js"
   },
   "keywords": [],
   "author": "",
