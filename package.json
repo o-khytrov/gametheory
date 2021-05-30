@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode production",
-    "start": "webpack-dev-server --mode development"
+    "start": "webpack-dev-server --mode development",
+    "deploy": "node scripts/gh-pages-deploy.js"
   },
   "keywords": [],
   "author": "",
@@ -37,7 +38,8 @@
     "vue-template-compiler": "^2.6.12",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.0",
+    "execa":"latest"
   },
   "browserslist": [
     "Chrome >= 45",
