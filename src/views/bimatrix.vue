@@ -1,7 +1,6 @@
 <template>
   <div id="bimatrix" class="container">
-    <h1>bimatrix</h1>
-
+    <h3>Bimatrix game</h3>
     <table class="table table-hover table-bordered bimatrix-table">
       <thead class="">
         <tr>
@@ -29,8 +28,6 @@
                 columMaximus[c] && bimatrix[r][c].a == columMaximus[c].a
                   ? 'rowmax'
                   : '',
-                'form-control',
-                'score',
               ]"
             />
             <input
@@ -40,8 +37,6 @@
                 rowMaximus[r] && bimatrix[r][c].b == rowMaximus[r].b
                   ? 'colmax'
                   : '',
-                'form-control',
-                'score',
               ]"
             />
             <div v-if="bimatrix[r][c].isnash">Nash Equilibrium</div>
@@ -77,64 +72,64 @@ export default {
       bimatrix: new Array(),
     };
   },
-  mounted:function(){
- this.bimatrix = [];
-      this.bimatrix[0] = [
-        {
-          a: 2,
-          b: 3,
-          isnash: false,
-        },
-        {
-          a: -4,
-          b: -1,
-          isnash: false,
-        },
-        {
-          a: -5,
-          b: 4,
-          isnash: false,
-        },
-      ];
-      this.bimatrix[1] = [
-        {
-          a: -1,
-          b: -3,
-          isnash: false,
-        },
-        {
-          a: 0,
-          b: -2,
-          isnash: false,
-        },
-        {
-          a: 1,
-          b: -4,
-          isnash: false,
-        },
-      ];
-      this.bimatrix[2] = [
-        {
-          a: 3,
-          b: 2,
-          isnash: false,
-        },
-        {
-          a: -2,
-          b: 1,
-          isnash: false,
-        },
-        {
-          a: -3,
-          b: 1,
-          isnash: false,
-        },
-      ];
-      this.rowMaximus = [];
-      this.columMaximus = [];
+  mounted: function () {
+    this.bimatrix = [];
+    this.bimatrix[0] = [
+      {
+        a: 2,
+        b: 3,
+        isnash: false,
+      },
+      {
+        a: -4,
+        b: -1,
+        isnash: false,
+      },
+      {
+        a: -5,
+        b: 4,
+        isnash: false,
+      },
+    ];
+    this.bimatrix[1] = [
+      {
+        a: -1,
+        b: -3,
+        isnash: false,
+      },
+      {
+        a: 0,
+        b: -2,
+        isnash: false,
+      },
+      {
+        a: 1,
+        b: -4,
+        isnash: false,
+      },
+    ];
+    this.bimatrix[2] = [
+      {
+        a: 3,
+        b: 2,
+        isnash: false,
+      },
+      {
+        a: -2,
+        b: 1,
+        isnash: false,
+      },
+      {
+        a: -3,
+        b: 1,
+        isnash: false,
+      },
+    ];
+    this.rowMaximus = [];
+    this.columMaximus = [];
   },
-  methods:{
-      solveBimatrix: function () {
+  methods: {
+    solveBimatrix: function () {
       this.rowMaximus = [];
       this.columMaximus = [];
       this.Stackelberg = {};
@@ -286,7 +281,7 @@ export default {
       console.log(this.columMaximus);
       console.log(this.bimatrix);
       this.$forceUpdate();
-    }
-  }
+    },
+  },
 };
 </script>

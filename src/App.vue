@@ -1,12 +1,20 @@
 <template>
   <div id="app">
-    <div class="nav">
-      <router-link to="/">Home</router-link>
-      |<router-link to="/zero-sum">Zero-sum game</router-link>
-      |<router-link to="/bimatrix">Bimatrix game</router-link>
-      |<router-link to="/position">Position game</router-link>
-      |<router-link to="/about">About</router-link>
-    </div>
+    <ul class="nav justify-content-center">
+      <li class="nav-item">
+        <router-link to="/">Home</router-link>
+      </li>
+      <li class="nav-item">
+        |<router-link to="/zero-sum">Zero-sum game</router-link>
+      </li>
+      <li class="nav-item">
+        |<router-link to="/bimatrix">Bimatrix game</router-link>
+      </li>
+      <li class="nav-item">
+        |<router-link to="/position">Position game</router-link>
+      </li>
+      <li class="nav-item">|<router-link to="/about">About</router-link></li>
+    </ul>
     <router-view />
   </div>
 </template>
@@ -47,33 +55,28 @@
 }
 
 .rowmax {
-    color: green !important;
-    ;
-    font-weight: bold !important;
-    ;
+  color: green !important;
+  font-weight: bold !important;
 }
 
 .colmax {
-    color: blue !important;
-    font-weight: bold !important;
-    ;
+  color: blue !important;
+  font-weight: bold !important;
 }
-
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
-    -webkit-appearance: none;
-    margin: 0;
-    /* <-- Apparently some margin are still there even though it's hidden */
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0;
+  /* <-- Apparently some margin are still there even though it's hidden */
 }
 
-input[type=number] {
-    -moz-appearance: textfield;
-    /* Firefox */
-    text-align: center;
-    max-width: 50px;
-    border-radius: 0;
+input[type="number"] {
+  -moz-appearance: textfield;
+  /* Firefox */
+  text-align: center;
+  max-width: 50px;
+  border-radius: 0;
 }
-
 </style>

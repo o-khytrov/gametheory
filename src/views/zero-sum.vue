@@ -1,5 +1,6 @@
 <template>
   <div id="zero-sum" class="container">
+    <h3>Zero-sum game</h3>
     <table class="table table-hover table-bordered bimatrix-table">
       <thead>
         <tr>

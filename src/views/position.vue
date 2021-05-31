@@ -1,5 +1,5 @@
 <template>
   <div id="position">
-    <h1>position</h1>
+  <h3>Position game</h3>
   </div>
 </template>
