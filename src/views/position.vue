@@ -163,29 +163,54 @@ export default {
         this.renderComponent = true;
       });
     },
-    backwardInductin: function (node, player) {
-      //node["optimal_" + player] = false;
-      if (!node.children) {
-        return node.wins[player - 1];
-      }
-      var betst_value = Number.NEGATIVE_INFINITY;
-      var best_value_node;
-      for (var i = 0; i < node.children.length; i++) {
-        var value_at_child = this.backwardInductin(
-          node.children[i],
-          node.player
-        );
+    backwardInductin: function (node) {
+      // if (node.wins) {
+      //   return node.wins[parent.player - 1];
+      // }
 
-        if (value_at_child > betst_value) {
-          betst_value = value_at_child;
-          best_value_node = node.children[i];
+      // var best_value = Number.NEGATIVE_INFINITY;
+      // var best_value_node;
+      // console.log("Evaluating ways for node " + node.name);
+      // for (var i = 0; i < node.children.length; i++) {
+      //   var value_at_child = this.backwardInductin(node.children[i], node);
+      //   console.log({ way: node.children[i].name, value: value_at_child });
+      //   if (value_at_child > best_value) {
+      //     best_value = value_at_child;
+      //     best_value_node = node.children[i];
+      //   }
+      // }
+
+      // best_value_node["optimal_" + node.player] = true;
+      // node.wins = best_value_node.wins;
+
+      // console.log({
+      //   node_name: node.name,
+      //   player: node.player,
+      //   choice: best_value_node.name,
+      //   best_value,
+      // });
+
+      if (!node.children) return;
+      var max_pay_off = Number.NEGATIVE_INFINITY;
+      var best_choise = node.children[0];
+      node.children.forEach((child) => {
+        if (!child.wins) this.backwardInductin(child);
+        var pay_off = child.wins[node.player - 1];
+        if (child.wins[node.player - 1] > max_pay_off) {
+          max_pay_off = pay_off;
+          best_choise = child;
         }
-      }
+      });
 
-      best_value_node["optimal_" + player] = true;
-      node.wins = best_value_node.wins;
-      console.log(node);
-      return betst_value;
+      best_choise["optimal_" + node.player] = true;
+      node.wins = best_choise.wins;
+
+      console.log({
+        node_name: node.name,
+        player: node.player,
+        choice: best_choise.name,
+        pay_off: best_choise.wins[node.player - 1],
+      });
     },
     solve: function () {
       var bestUtil = this.backwardInductin(this.gameTree);
