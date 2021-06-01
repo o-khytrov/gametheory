@@ -79,4 +79,26 @@ input[type="number"] {
   max-width: 50px;
   border-radius: 0;
 }
+
+.tree-node {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: antiquewhite;
+  text-align: center;
+  line-height: 28px;
+}
+.optimal_1 {
+  background-color: green;
+    color:white;
+}
+.optimal_2 {
+  background-color: blue;
+  color:white;
+}
+.position-choise
+{
+   font-style: italic;
+}
 </style>
