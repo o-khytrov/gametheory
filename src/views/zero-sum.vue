@@ -53,7 +53,9 @@
             {{ v }}={{ solution.a.result[v].toFixed(2) }}
           </div>
           <div>probabilities</div>
-          <div v-for="(p, i) in solution.a.probabilities">{{ i }}={{ p.toFixed(2) }}</div>
+          <div v-for="(p, i) in solution.a.probabilities">
+            {{ i }}={{ p.toFixed(2) }}
+          </div>
         </div>
         <div class="col-6">
           <div>{{ solution.b.f }}</div>
@@ -63,7 +65,10 @@
             {{ v }}={{ solution.b.result[v].toFixed(2) }}
           </div>
           <div>probabilities</div>
-          <div v-for="(p, i) in solution.b.probabilities">{{ i }}={{ p.toFixed(2) }}</div>
+          <div v-for="(p, i) in solution.b.probabilities">
+            {{ i }}={{ p.toFixed(2) }}
+          </div>
+          <div class="col-12">{{ this.solution.gamePrice}}</div>
         </div>
       </div>
     </div>
@@ -73,8 +78,8 @@
 export default {
   data: function () {
     return {
-      rows: 3,
-      cols: 3,
+      rows: 4,
+      cols: 5,
       matrix: new Array(),
       rowsTotals: new Array(),
       colsTotals: new Array(),
@@ -92,9 +97,10 @@ export default {
       this.rowsTotals = [];
       this.colsTotals = [];
       this.matrix = [];
-      this.matrix[0] = [3, 6, 8];
-      this.matrix[1] = [9, 4, 2];
-      this.matrix[2] = [7, 5, 4];
+      this.matrix[0] = [9, 12, 7, 7, 10];
+      this.matrix[1] = [8, 6, 11, 6, 9];
+      this.matrix[2] = [6, 8, 8, 9, 6];
+      this.matrix[3] = [6, 7, 6, 9, 7];
     },
 
     isNumber: function (event) {
@@ -206,7 +212,7 @@ export default {
       for (var v = 0; v < this.solution.b.variables.length; v++) {
         var varName = this.solution.b.variables[v];
         this.solution.b.probabilities["p" + v] =
-        this.solution.gamePrice * this.solution.b.result[varName];
+          this.solution.gamePrice * this.solution.b.result[varName];
       }
       console.log(this.solution);
       this.solved = true;
