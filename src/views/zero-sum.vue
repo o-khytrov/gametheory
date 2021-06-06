@@ -68,7 +68,11 @@
           <div v-for="(p, i) in solution.b.probabilities">
             {{ i }}={{ p.toFixed(2) }}
           </div>
-          <div class="col-12">{{ this.solution.gamePrice}}</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          Game Price :{{ this.solution.gamePrice.toFixed(2) }}
         </div>
       </div>
     </div>
@@ -83,7 +87,11 @@ export default {
       matrix: new Array(),
       rowsTotals: new Array(),
       colsTotals: new Array(),
-      solution: { bottomPrice: 0, topPrice: 0 },
+      //об
+      solution: {
+        bottomPrice: 0, // нижня ціна
+        topPrice: 0, // верхня ціна
+      },
       solved: false,
       brownRobbinsTable: new Array(),
     };
@@ -94,13 +102,13 @@ export default {
   methods: {
     //побудова матриць
     buildMatrix: function () {
-      this.rowsTotals = [];
-      this.colsTotals = [];
-      this.matrix = [];
+      this.matrix = []; //матриця гри
       this.matrix[0] = [9, 12, 7, 7, 10];
       this.matrix[1] = [8, 6, 11, 6, 9];
       this.matrix[2] = [6, 8, 8, 9, 6];
       this.matrix[3] = [6, 7, 6, 9, 7];
+      this.rowsTotals = []; //мінімальні значення по рядкам
+      this.colsTotals = []; //максимальні значення по стовпчикам
     },
 
     isNumber: function (event) {
@@ -114,7 +122,9 @@ export default {
         event.target.dispatchEvent(resetEvent);
       }
     },
+    // знаходження нижньої на верхньої ціни гри
     findMinMax: function () {
+      //визначення мінімумів по рядкам
       for (var i = 0; i < this.rows; i++) {
         let min = this.matrix[i][0];
         for (var j = 0; j < this.cols; j++) {
@@ -122,7 +132,7 @@ export default {
         }
         this.rowsTotals[i] = min;
       }
-
+      //визначення мінімумів по стовпчикам
       for (var i = 0; i < this.cols; i++) {
         let max = this.matrix[0][i];
         for (var j = 0; j < this.rows; j++) {
@@ -130,13 +140,14 @@ export default {
         }
         this.colsTotals[i] = max;
       }
-
+      //визначення максимального мінімуму
       this.solution.bottomPrice = this.rowsTotals[0];
       for (var i = 0; i < this.cols; i++) {
         if (this.rowsTotals[i] > this.solution.bottomPrice)
           this.solution.bottomPrice = this.rowsTotals[i];
       }
 
+      //визначення мінімального максимуму
       this.solution.topPrice = this.colsTotals[0];
       for (var i = 0; i < this.rows; i++) {
         if (this.colsTotals[i] < this.solution.topPrice)
@@ -145,8 +156,10 @@ export default {
     },
     solve: function () {
       this.findMinMax();
+
       var constraints = [];
       var variables = new Array(this.rows);
+      //формування задачі лінійного програмування першого гравця
       for (var i = 0; i < this.rows; i++) {
         variables[i] = "x" + (i + 1);
         constraints.push(`${variables[i]}>=0`);
@@ -157,6 +170,7 @@ export default {
         variables,
       };
 
+      //формування задачі лінійного програмування другого гравця
       constraints = [];
       variables = new Array(this.cols);
       for (var i = 0; i < this.cols; i++) {
@@ -190,19 +204,24 @@ export default {
 
       var simplex = require("simplex-solver");
 
+      //вирішення задачі лінійного програмування першого гравця
       this.solution.a.result = simplex.maximize(
         this.solution.a.variables.map((x) => (x = "-" + x)).join(" + "),
         this.solution.a.constraints
       );
+      //вирішення задачі лінійного програмування другого гравця
       this.solution.b.result = simplex.maximize(
         this.solution.b.variables.join(" + "),
         this.solution.b.constraints
       );
 
+      //визначення ціни гри
       this.solution.gamePrice = 1 / this.solution.b.result.max;
+
       this.solution.a.probabilities = {};
       this.solution.b.probabilities = {};
 
+      //визначення ймовірностей
       for (var v = 0; v < this.solution.a.variables.length; v++) {
         var varName = this.solution.a.variables[v];
         this.solution.a.probabilities["p" + v] =
@@ -214,6 +233,7 @@ export default {
         this.solution.b.probabilities["p" + v] =
           this.solution.gamePrice * this.solution.b.result[varName];
       }
+
       console.log(this.solution);
       this.solved = true;
     },

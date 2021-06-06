@@ -25,7 +25,7 @@
               type="number"
               style="float: left; margin: auto"
               v-bind:class="[
-                columMaximus[c] && bimatrix[r][c].a == columMaximus[c].a
+                columMaximums[c] && bimatrix[r][c].a == columMaximums[c].a
                   ? 'rowmax'
                   : '',
               ]"
@@ -34,7 +34,7 @@
               v-model="bimatrix[r][c].b"
               type="number"
               v-bind:class="[
-                rowMaximus[r] && bimatrix[r][c].b == rowMaximus[r].b
+                rowMaximums[r] && bimatrix[r][c].b == rowMaximums[r].b
                   ? 'colmax'
                   : '',
               ]"
@@ -76,85 +76,82 @@ export default {
     this.bimatrix = [];
     this.bimatrix[0] = [
       {
-        a: 2,
-        b: 3,
-        isnash: false,
+        a: 5,
+        b: 8,
       },
       {
-        a: -4,
-        b: -1,
-        isnash: false,
+        a: 6,
+        b: 1,
       },
       {
-        a: -5,
-        b: 4,
-        isnash: false,
+        a: 3,
+        b: 2,
       },
     ];
     this.bimatrix[1] = [
       {
-        a: -1,
-        b: -3,
-        isnash: false,
+        a: 2,
+        b: 2,
       },
       {
-        a: 0,
-        b: -2,
-        isnash: false,
+        a: 4,
+        b: 5,
       },
       {
-        a: 1,
-        b: -4,
-        isnash: false,
+        a: 6,
+        b: 3,
       },
     ];
     this.bimatrix[2] = [
       {
-        a: 3,
+        a: 4,
         b: 2,
-        isnash: false,
       },
       {
-        a: -2,
-        b: 1,
-        isnash: false,
+        a: 3,
+        b: 3,
       },
       {
-        a: -3,
-        b: 1,
-        isnash: false,
+        a: 6,
+        b: 4,
       },
     ];
-    this.rowMaximus = [];
-    this.columMaximus = [];
+    //максимуми по рядкам
+    this.rowMaximums = [];
+    //максимуми по стовчикам
+    this.columMaximums = [];
   },
   methods: {
     solveBimatrix: function () {
-      this.rowMaximus = [];
-      this.columMaximus = [];
+      //максимуми по рядкам матриці
+      this.rowMaximums = [];
+      //максимуми по стовпчикам матриці
+      this.columMaximums = [];
+      //об'єкт для результатів розрахунку рівноваги Штакельберга
       this.Stackelberg = {};
 
+      //визначення максимумів по рядкам і стовчикам
       for (var r = 0; r < this.bimatrix.length; r++) {
         for (var c = 0; c < this.bimatrix[r].length; c++) {
           var s = this.bimatrix[r][c];
           var a = s.a;
           var b = s.b;
 
-          if (!this.rowMaximus[r])
-            this.rowMaximus[r] = {
+          if (!this.rowMaximums[r])
+            this.rowMaximums[r] = {
               a,
               b,
             };
-          if (!this.columMaximus[c])
-            this.columMaximus[c] = {
+          if (!this.columMaximums[c])
+            this.columMaximums[c] = {
               a,
               b,
             };
 
-          if (a > this.rowMaximus[r].a) this.rowMaximus[r].a = a;
-          if (b > this.rowMaximus[r].b) this.rowMaximus[r].b = b;
-          if (a > this.columMaximus[c].a) this.columMaximus[c].a = a;
-          if (b > this.columMaximus[c].b) this.columMaximus[c].b = b;
+          if (a > this.rowMaximums[r].a) this.rowMaximums[r].a = a;
+          if (b > this.rowMaximums[r].b) this.rowMaximums[r].b = b;
+          if (a > this.columMaximums[c].a) this.columMaximums[c].a = a;
+          if (b > this.columMaximums[c].b) this.columMaximums[c].b = b;
         }
       }
 
@@ -164,10 +161,13 @@ export default {
           var a = s.a;
           var b = s.b;
 
-          if (a == this.columMaximus[c].a && b == this.rowMaximus[r].b) {
+          //якщо виграш першого гравця є максимум по стовчику і виграш другого гравця є максимум по рядку - це рівновага Неша
+          if (a == this.columMaximums[c].a && b == this.rowMaximums[r].b) {
             this.bimatrix[r][c].isnash = true;
           }
 
+          //пошук рівноваги Парето
+          //перебір альтернативних стратегій з більшим виграшем
           var alt = [];
           for (var i = 0; i < this.bimatrix.length; i++) {
             for (var j = 0; j < this.bimatrix.length; j++) {
@@ -179,17 +179,23 @@ export default {
 
           var altA = alt.find((x) => x.a > a && x.b >= b);
           var altB = alt.find((x) => x.b > b && x.a >= a);
-
+          //якщо альтернативні стратегії з кращим виграшем відсутні для всіх гравців ситуація є рівновагою Парето
           this.bimatrix[r][c].ispareto = !altB && !altA;
         }
       }
 
+      //Пошук рівноваги Штакельберга
+      
+      //Рішення для ситуації, коли гравець В - лідер
       this.Stackelberg.b = {
         text: "If player B is a leader",
       };
-
+      //Пояснення ходу
       var explanation = [];
+      //Можливі ходи
       var options = [];
+      
+      //Перебір всіх відповідей гравця А
       for (var c = 0; c < this.bimatrix[0].length; c++) {
         var maxA = this.bimatrix[0][c].a;
         var playerAstr = 0;
@@ -200,10 +206,12 @@ export default {
             playerAstr = r;
           }
         }
+        //заповнюємо набір стратегій
         options.push({
           playerBstr: c,
           playerAstr,
         });
+        //формуємо коментар
         explanation.push(
           `when player B is using strategy B${c}, player A chooses strategy A${playerAstr} A${playerAstr}:B${c} (${this.bimatrix[playerAstr][c].a}:${this.bimatrix[playerAstr][c].b})`
         );
@@ -226,6 +234,7 @@ export default {
       console.log({
         boptions: options,
       });
+
       this.bimatrix[stackelbergEq.a][stackelbergEq.b].isstackelberg = true;
       explanation.push(
         `Maximum win of player B is ${maxB} in strategy  A${stackelbergEq.a}:B${stackelbergEq.b}`
@@ -236,9 +245,10 @@ export default {
         text: "If player A is a leader",
       };
 
+      //Рішення для ситуації, коли гравець А - лідер
       explanation = [];
       options = [];
-
+        //Перебір всіх відповідей гравця В
       for (var r = 0; r < this.bimatrix.length; r++) {
         var maxB = this.bimatrix[r][0].b;
         var playerBstr = 0;
@@ -249,14 +259,17 @@ export default {
             playerBstr = c;
           }
         }
+        //заповнюємо набір стратегій
         options.push({
           playerBstr,
           playerAstr: r,
         });
+         //формуємо коментар
         explanation.push(
           `when player A is using strategy A${r}, player B chooses strategy B${playerBstr} A${r}:B${playerBstr} (${this.bimatrix[r][playerBstr].a}:${this.bimatrix[r][playerBstr].b})`
         );
       }
+      //знаходимо максимум
       var maxA = this.bimatrix[options[0].playerAstr][options[0].playerBstr].a;
       var stackelbergEq = {
         a: options[0].playerAstr,
@@ -277,9 +290,7 @@ export default {
       );
       this.Stackelberg.a.text += "\n" + explanation.join("\n");
 
-      console.log(this.rowMaximus);
-      console.log(this.columMaximus);
-      console.log(this.bimatrix);
+ 
       this.$forceUpdate();
     },
   },
